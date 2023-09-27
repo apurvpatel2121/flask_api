@@ -42,3 +42,16 @@ def delete_book(isbn):
         db.session.commit()
         return jsonify({'result': True})
 
+
+@app.route('/book/update/<int:isbn>', methods=['PUT'])
+def update_book(isbn):
+    if not request.json:
+        return jsonify({'message':'data should be in json'})
+    book = Book.query.get(isbn)
+    if book is None:
+        return jsonify({'message':'object not found'})
+    book.author = request.json.get('author')
+    book.title = request.json.get('title')
+    book.price = request.json.get('price')
+    db.session.commit()
+    return jsonify({'message':'update successful'},book.to_json())
